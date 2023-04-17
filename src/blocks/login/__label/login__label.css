@@ -1,0 +1,7 @@
+.login__label {
+  position: relative;
+  width: 358px;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+}

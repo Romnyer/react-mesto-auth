@@ -1,0 +1,18 @@
+.header__link {
+  background-color: #000;
+  border: none;
+  padding: 0;
+  height: 22px;
+  transition-property: opacity;
+  transition-duration: 1s;
+
+  color: #fff;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: right;
+  text-decoration: none;
+}
+
+.header__link:hover {
+  opacity: .6;
+}
