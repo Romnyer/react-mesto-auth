@@ -13,7 +13,7 @@ Mesto – это **проект** для публикации изображен
 
 Будет добавлена валидация форм и мобильная версия.
 
-**Ссылка на страницу** [Mesto](https://romnyer.github.io/react-mesto-auth/)
+**Ссылка на страницу** [Mesto-React](https://romnyer.github.io/react-mesto-auth/)
 
 **Figma** [Ссылка на макет в Figma](https://www.figma.com/file/5H3gsn5lIGPwzBPby9jAOo/JavaScript.-Sprint-12?node-id=0-1&t=8GOTouwyh2WlrjLH-0)
 
