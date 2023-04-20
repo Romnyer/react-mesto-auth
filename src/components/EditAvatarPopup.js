@@ -18,9 +18,7 @@ function EditAvatarPopup({isOpen, onClose, onUpdateAvatar, handleCloseByClick, i
       submitClass={" popup__submit-button_for_upload"}
       onSubmit={handleAvatarSubmit}
       handleCloseByClick={handleCloseByClick}
-      valueText={'Сохранить'}
-      valueLoadingText={'Сохранение...'}
-      isLoading={isLoading}
+      valueText={isLoading ? 'Сохранение...' : 'Сохранить'}
     >
       <label className="popup__label popup__label_type_upload">
         <input

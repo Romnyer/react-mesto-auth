@@ -1,3 +1,22 @@
 .header__container {
   display: flex;
+  align-items: center;
+  margin-right: 30px;
+  background-image: none;
+}
+
+@media (max-width: 443px) {
+
+  .header__container {
+    margin-right: 0;
+    min-width: 56px;
+    max-width: calc(100vw - 210px);
+  }
+}
+
+@media (max-width: 320px) {
+
+  .header__container {
+    margin-right: 30px;
+  }
 }

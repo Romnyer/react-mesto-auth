@@ -19,7 +19,8 @@ import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
 import api from '../utils/api.js';
 import auth from '../utils/auth.js';
 
-const esc = 'Escape';
+import success from '../images/Success.svg';
+import failed from '../images/Failed.svg';
 
 function App() {
 
@@ -34,26 +35,23 @@ function App() {
         [cards, setCards] = useState([]),
         [isTooltipOpen, setTooltipOpen] = useState(false),
         [loggedIn, setLoggedIn] = useState(false),
-        [isSuccess, setIsSuccess] = useState(false);
+        [isSuccessTooltipStatus, setSuccessTooltipStatus] = useState(false);
 
-  const allPopupSeters = [setIsEditProfilePopupOpen,
-        setIsAddPlacePopupOpen,
-        setIsEditAvatarPopupOpen,
-        setIsDeletePopupOpen,
-        setIsImagePopupOpen,
-        setTooltipOpen],
-        allPopupIsOpen = [isEditProfilePopupOpen,
-          isAddPlacePopupOpen,
-          isEditAvatarPopupOpen,
-          isDeletePopupOpen,
-          isImagePopupOpen,
-          isTooltipOpen];
+  const allPopupSeters = [
+          setIsEditProfilePopupOpen,
+          setIsAddPlacePopupOpen,
+          setIsEditAvatarPopupOpen,
+          setIsDeletePopupOpen,
+          setIsImagePopupOpen,
+          setTooltipOpen
+        ];
 
-  const isAnyPopupOpen = allPopupIsOpen.some(popup => {
-    return popup === true;
-  });
-
-  const [isLoading, setIsLoading] = useState(false);
+  const [isEditProfilePopupLoading, setEditProfilePopupLoading] = useState(false),
+        [isEditAvatarPopupLoading, setEditAvatarPopupLoading] = useState(false),
+        [isAddPlacePopupLoading, setAddPlacePopupLoading] = useState(false),
+        [isDeletePopupLoading, setDeletePopupLoading] = useState(false),
+        [isSignInLoading, setSignInLoading] = useState(false),
+        [isSignUpLoading, setSignUpLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -62,11 +60,20 @@ function App() {
 
 
   useEffect(() => {
-    if (localStorage.getItem('jwtToken')) {
-      Promise.all([api.getProfileInfo(), api.getCards(), auth.getUserInfo(localStorage.getItem('jwtToken'))])
-        .then(([userData, cardList, authData]) => {
-          setCurrentUser(userData);
-          setCards(cardList);
+    Promise.all([api.getProfileInfo(), api.getCards()])
+      .then(([userData, cardList]) => {
+        setCurrentUser(userData);
+        setCards(cardList);
+      })
+      .catch(err => console.log(err));
+    }, [loggedIn]);
+
+  useEffect(() => {
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    if (jwtToken) {
+      auth.getUserInfo(jwtToken)
+        .then((authData) => {
           setEmail(authData.data.email);
 
           setLoggedIn(true);
@@ -94,11 +101,6 @@ function App() {
     setSelectedCard(card);
     setIsDeletePopupOpen(true);
   };
-  function handleCloseByClick(evt, ref) {
-    if (evt.target === ref.current) {
-      closeAllPopups();
-    }
-  };
 
 
   //Handle click on card pic
@@ -124,15 +126,20 @@ function App() {
 
   //Timeout for visual effect
   //Without timeout user will see effect of setIsLoading() before popup closed
-  function timeoutClosing() {
+
+  /*Изначальный текст кнопки возвращается через 0,5 секунды, а не сразу, для визауального отклика.
+  Это произойдёт и при неуспешном завершении запроса.
+  А попап закроется как раз только при успешном завершении.
+  Так происходит при отправке запроса без ввода данных*/
+  function endLoadingTimeout(setPopupIsLoading) {
     setTimeout(() => {
-      setIsLoading(false);
+      setPopupIsLoading(false);
     }, 500)
   };
 
   //Submit profile
   function handleUpdateUser(name, description) {
-    setIsLoading(true);
+    setEditProfilePopupLoading(true);
     api.changeUserInfo(name, description)
       .then(userData => {
         setCurrentUser({
@@ -143,12 +150,12 @@ function App() {
         closeAllPopups();
       })
       .catch(err => console.log(err))
-      .finally(() => timeoutClosing())
+      .finally(() => endLoadingTimeout(setEditProfilePopupLoading))
   };
 
   //Submit avatar
   function handleUpdateAvatar(avatar) {
-    setIsLoading(true);
+    setEditAvatarPopupLoading(true);
     api.changeAvatar(avatar)
       .then(userData => {
         setCurrentUser({
@@ -158,67 +165,68 @@ function App() {
         closeAllPopups();
       })
       .catch(err => console.log(err))
-      .finally(() => timeoutClosing())
+      .finally(() => endLoadingTimeout(setEditAvatarPopupLoading))
   };
 
   //Sumbit place
   function handleAddPlace(place, link) {
-    setIsLoading(true);
+    setAddPlacePopupLoading(true);
     api.addCard(place, link)
       .then(newCard => {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
       .catch(err => console.log(err))
-      .finally(() => timeoutClosing())
+      .finally(() => endLoadingTimeout(setAddPlacePopupLoading))
   };
 
   //Submit delete card
   function handleCardDelete(card) {
-    setIsLoading(true);
+    setDeletePopupLoading(true);
     api.deleteCard(card._id)
       .then(() => {
       setCards((state) => state.filter((c) => c._id !== card._id));
       closeAllPopups();
     })
       .catch(err => console.log(err))
-      .finally(() => timeoutClosing())
+      .finally(() => endLoadingTimeout(setDeletePopupLoading))
 
   };
 
   //Sign in and set jwt
   function handleLoginSubmit(email, password) {
-    setIsLoading(true);
-    auth.signin(email, password)
+    setSignInLoading(true);
+    auth.signIn(email, password)
       .then(data => {
         localStorage.setItem('jwtToken', data.token);
+        setEmail(email);
+
         setLoggedIn(true);
         navigate('/', {replace: true});
       })
       .catch(err => {
         console.log(err);
         setTooltipOpen(true);
-        setIsSuccess(false);
+        setSuccessTooltipStatus(false);
       })
-      .finally(() => timeoutClosing())
+      .finally(() => endLoadingTimeout(setSignInLoading))
   };
 
   //Sign up
   function handleRegisterSubmit(email, password) {
-    setIsLoading(true);
-    auth.signup(email, password)
+    setSignUpLoading(true);
+    auth.signUp(email, password)
       .then(data => {
-        console.log(data);
         setTooltipOpen(true);
-        setIsSuccess(true);
+        setSuccessTooltipStatus(true);
         navigate('/', {replace: true});
       })
       .catch(err => {
         console.log(err);
         setTooltipOpen(true);
-        setIsSuccess(false);
+        setSuccessTooltipStatus(false);
       })
-      .finally(() => timeoutClosing())
+      .finally(() => endLoadingTimeout(setSignUpLoading))
   };
 
 
@@ -230,23 +238,6 @@ function App() {
       seter(false);
     })
   };
-
-  //Close popups by Esc
-  useEffect(() => {
-    function closePopupByEsc(evt) {
-      if (evt.key === esc) {
-        closeAllPopups();
-      }
-    };
-
-    if (isAnyPopupOpen) {
-      document.addEventListener('keydown', closePopupByEsc);
-    }
-
-    return () => {
-      document.removeEventListener('keydown', closePopupByEsc);
-    }
-  }, [...allPopupIsOpen]);
 
 
 
@@ -278,11 +269,8 @@ function App() {
           {/*Sign in*/}
 
           <Route path="sign-in" element={<Login
-            title={'Вход'}
             onSubmit={handleLoginSubmit}
-            valueText={'Войти'}
-            valueLoadingText={'Вход...'}
-            isLoading={isLoading}
+            isLoading={isSignInLoading}
           />}
           />
 
@@ -290,7 +278,7 @@ function App() {
 
           <Route path="sign-up" element={<Register
             onSubmit={handleRegisterSubmit}
-            isLoading={isLoading}
+            isLoading={isSignUpLoading}
           />}
           />
 
@@ -308,8 +296,7 @@ function App() {
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
-          isLoading={isLoading}
-          handleCloseByClick={handleCloseByClick}
+          isLoading={isEditProfilePopupLoading}
         />
 
         {/*Avatar popup*/}
@@ -318,8 +305,7 @@ function App() {
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
-          isLoading={isLoading}
-          handleCloseByClick={handleCloseByClick}
+          isLoading={isEditAvatarPopupLoading}
         />
 
         {/*Add place popup*/}
@@ -328,8 +314,7 @@ function App() {
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlace}
-          isLoading={isLoading}
-          handleCloseByClick={handleCloseByClick}
+          isLoading={isAddPlacePopupLoading}
         />
 
         {/*Delete place popup*/}
@@ -339,8 +324,7 @@ function App() {
           isOpen={isDeletePopupOpen}
           onClose={closeAllPopups}
           onSubmit={handleCardDelete}
-          isLoading={isLoading}
-          handleCloseByClick={handleCloseByClick}
+          isLoading={isDeletePopupLoading}
         />
 
         {/*Place popup*/}
@@ -349,16 +333,15 @@ function App() {
           card={selectedCard}
           isOpen={isImagePopupOpen}
           onClose={closeAllPopups}
-          handleCloseByClick={handleCloseByClick}
         />
 
         {/*Success tooltip*/}
 
         <InfoTooltip
           isOpen={isTooltipOpen}
-          isSuccess={isSuccess}
+          pic={isSuccessTooltipStatus ? success : failed}
+          text={isSuccessTooltipStatus ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так! Попробуйте ещё раз.'}
           onClose={closeAllPopups}
-          handleCloseByClick={handleCloseByClick}
         />
 
       </div>

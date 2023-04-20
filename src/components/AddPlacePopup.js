@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import PopupWithForm from './PopupWithForm.js';
 
 function AddPlacePopup({isOpen, onClose, onAddPlace, handleCloseByClick, isLoading}) {
@@ -8,7 +8,12 @@ function AddPlacePopup({isOpen, onClose, onAddPlace, handleCloseByClick, isLoadi
   function handlePlaceSubmit(evt) {
     evt.preventDefault();
     onAddPlace(place.current.value, link.current.value);
-  }
+  };
+
+  useEffect(() => {
+    place.current.value = '';
+    link.current.value = '';
+  }, [isOpen]);
 
   return (
     <PopupWithForm
@@ -18,9 +23,7 @@ function AddPlacePopup({isOpen, onClose, onAddPlace, handleCloseByClick, isLoadi
       onClose={onClose}
       onSubmit={handlePlaceSubmit}
       handleCloseByClick={handleCloseByClick}
-      valueText={'Создать'}
-      valueLoadingText={'Создание...'}
-      isLoading={isLoading}
+      valueText={isLoading ? 'Создание...' : 'Создать'}
     >
       <label className="popup__label">
         <input

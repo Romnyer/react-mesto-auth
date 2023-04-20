@@ -7,6 +7,19 @@ import avatar from '../images/Avatar.jpg';
 function Main({cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, handleCardLike, handleDeleteClick}) {
   const currentUser = useContext(CurrentUserContext);
 
+  //Element template
+  const cardElements = cards.map(item => (
+    <li className="elements__item" key={item._id}>
+      <Card
+        card={item}
+        userId={currentUser._id}
+        onCardClick={onCardClick}
+        onCardLike={handleCardLike}
+        onCardDelete={handleDeleteClick}
+      />
+    </li>
+  ));
+
   return (
     <main className="main">
 
@@ -40,19 +53,7 @@ function Main({cards, onEditProfile, onAddPlace, onEditAvatar, onCardClick, hand
 
       <section className="elements">
         <ul className="elements__items">
-
-          {/*Element template*/}
-          {cards.map(item => (
-            <Card
-              card={item}
-              userId={currentUser._id}
-              onCardClick={onCardClick}
-              onCardLike={handleCardLike}
-              onCardDelete={handleDeleteClick}
-              key={item._id}
-            />
-          ))}
-
+          {cardElements}
         </ul>
       </section>
 

@@ -5,3 +5,17 @@
   display: flex;
   flex-direction: column;
 }
+
+@media (max-width: 509px) {
+
+  .login__label {
+    max-width: calc(100vw - 38px - 44px);
+  }
+}
+
+@media (max-width: 320px) {
+
+  .login__label {
+    max-width: 260px;
+  }
+}

@@ -15,9 +15,7 @@ function DeleteCardPopup({card, isOpen, onClose, onSubmit, handleCloseByClick, i
       onSubmit={handleDeleteSubmit}
       submitClass={" popup__submit-button_for_delete"}
       handleCloseByClick={handleCloseByClick}
-      valueText={'Да'}
-      valueLoadingText={'Удаление...'}
-      isLoading={isLoading}
+      valueText={isLoading ? 'Удаление...' : 'Да'}
     />
   );
 };

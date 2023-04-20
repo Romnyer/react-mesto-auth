@@ -23,7 +23,7 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser, handleCloseByClick, is
   useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [currentUser]);
+  }, [currentUser, isOpen]);
 
   return (
     <PopupWithForm
@@ -33,9 +33,7 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser, handleCloseByClick, is
       onClose={onClose}
       onSubmit={handleSubmit}
       handleCloseByClick={handleCloseByClick}
-      valueText={'Сохранить'}
-      valueLoadingText={'Сохранение...'}
-      isLoading={isLoading}
+      valueText={isLoading ? 'Сохранение...' : 'Сохранить'}
     >
       <label className="popup__label">
         <input

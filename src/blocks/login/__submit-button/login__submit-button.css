@@ -20,3 +20,18 @@
 .login__submit-button:hover {
   opacity: 0.6;
 }
+
+@media (max-width: 509px) {
+
+  .login__submit-button {
+    max-width: calc(100vw - 38px - 44px);
+  }
+}
+
+@media (max-width: 320px) {
+
+  .login__submit-button {
+    max-width: 260px;
+    height: 46px;
+  }
+}

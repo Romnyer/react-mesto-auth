@@ -1,15 +1,13 @@
 import React from "react";
 import {Link} from 'react-router-dom';
-import Login from "./Login";
+import Login from "./AuthForm";
 
 function Register({onSubmit, isLoading}) {
   return (
     <Login
     title={'Регистрация'}
     onSubmit={onSubmit}
-    valueText={'Зарегистрироваться'}
-    valueLoadingText={'Регистрация...'}
-    isLoading={isLoading}
+    valueText={isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
     >
       <p className="login__submit-text">
         Уже зарегистрированы?
