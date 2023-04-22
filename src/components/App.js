@@ -60,12 +60,14 @@ function App() {
 
 
   useEffect(() => {
-    Promise.all([api.getProfileInfo(), api.getCards()])
-      .then(([userData, cardList]) => {
-        setCurrentUser(userData);
-        setCards(cardList);
-      })
-      .catch(err => console.log(err));
+    if (loggedIn) {
+      Promise.all([api.getProfileInfo(), api.getCards()])
+        .then(([userData, cardList]) => {
+          setCurrentUser(userData);
+          setCards(cardList);
+        })
+        .catch(err => console.log(err))
+      }
     }, [loggedIn]);
 
   useEffect(() => {
@@ -126,11 +128,6 @@ function App() {
 
   //Timeout for visual effect
   //Without timeout user will see effect of setIsLoading() before popup closed
-
-  /*Изначальный текст кнопки возвращается через 0,5 секунды, а не сразу, для визауального отклика.
-  Это произойдёт и при неуспешном завершении запроса.
-  А попап закроется как раз только при успешном завершении.
-  Так происходит при отправке запроса без ввода данных*/
   function endLoadingTimeout(setPopupIsLoading) {
     setTimeout(() => {
       setPopupIsLoading(false);

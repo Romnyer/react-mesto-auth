@@ -35,6 +35,10 @@
 
   .header {
     padding: 8.7vw 19px 16.6vw;
+
+    transition-property: max-height;
+    transition-duration: 1s;
+    transition-timing-function: linear;
   }
 
   .header::after {

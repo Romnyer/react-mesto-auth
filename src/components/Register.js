@@ -1,10 +1,10 @@
 import React from "react";
 import {Link} from 'react-router-dom';
-import Login from "./AuthForm";
+import AuthForm from "./AuthForm";
 
 function Register({onSubmit, isLoading}) {
   return (
-    <Login
+    <AuthForm
     title={'Регистрация'}
     onSubmit={onSubmit}
     valueText={isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
@@ -13,7 +13,7 @@ function Register({onSubmit, isLoading}) {
         Уже зарегистрированы?
         <Link to="/" className="login__entry-link">Войти</Link>
       </p>
-    </Login>
+    </AuthForm>
 
   )
 }

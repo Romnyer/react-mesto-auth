@@ -8,7 +8,7 @@ function Popup({isOpen, onClose, children}) {
     onClose()
   };
 
-  function handleClose(evt) {
+  function handleCloseByOverlay(evt) {
     if (evt.target === popup.current) {
       onClose();
     }
@@ -34,7 +34,7 @@ function Popup({isOpen, onClose, children}) {
   return (
     <div
       className={`popup ${isOpen ? 'popup_opened' : ''}`}
-      onClick={handleClose}
+      onClick={handleCloseByOverlay}
       ref={popup}
     >
       <div className="popup__container">
