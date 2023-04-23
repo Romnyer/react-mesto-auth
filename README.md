@@ -20,7 +20,7 @@ Mesto – это **проект** для публикации изображен
 
 🖼**Figma** [Макет страницы](https://www.figma.com/file/5H3gsn5lIGPwzBPby9jAOo/JavaScript.-Sprint-12?node-id=0-1&t=8GOTouwyh2WlrjLH-0)
 
-### Стек
+### 🛠Стек
 <div>
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=black" alt="JavaScript" style="display:inline;"/>
   <img src="https://img.shields.io/badge/HTML-E34F26?style=flat-square&logo=HTML5&logoColor=white" alt="HTML" style="display:inline;"/>
